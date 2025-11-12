@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: example-go-app
+  name: example-go-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-go-app
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: example-go-app
+    spec:
+      containers:
+        - image: ghcr.io/jjsiv-homelab/example-go-app:v1.0.2
+          name: example-go-app
+          args:
+            - --insecure
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: 8443
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8443
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: example-go-app
+  name: example-go-app
+spec:
+  ports:
+    - name: http
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+  selector:
+    app: example-go-app
+  type: ClusterIP
