@@ -1,0 +1,7 @@
+{
+  "repoURL": "git@github.com:jjsiv-homelab/example-project-deploy.git",
+  "drySha": "312aeae19a7530ffb7049cea249770e817751f08",
+  "commands": [
+    "kustomize build ./example-go-app/overlays/staging --enable-helm"
+  ]
+}
