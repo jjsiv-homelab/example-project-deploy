@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: welcome-app
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        instrumentation.opentelemetry.io/inject-java: "java-instrumentation"
+    spec:
+      imagePullSecrets:
+        - name: pull-secret
+      containers:
+        - name: name-server
+          image: registry.gitlab.com/jjsiv-homelab/welcome-app/name-server:latest
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: welcome-app
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  type: ClusterIP
